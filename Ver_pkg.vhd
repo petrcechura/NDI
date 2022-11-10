@@ -1,4 +1,6 @@
-
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 constant frame_size : integer := 16;
 constant am_of_commands : integer := 4;
@@ -16,3 +18,5 @@ type t_bfm_to_dut is record
     sclk : std_logic;
     cs_b : std_logic;
 end type;
+
+type 

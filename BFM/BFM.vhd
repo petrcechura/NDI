@@ -9,7 +9,7 @@ entity test is
         mosi : out std_logic;
         miso : in std_logic_vector(19 downto 0);
         cs_b : out std_logic;
-        bfm_com : in std_logic_vector(3 downto 0);
+        bfm_com : in std_logic_vector(3 downto 0); --replace with type from pkg
         bfm_rep : out std_logic_vector(3 downto 0)
     );
 end entity;
@@ -37,6 +37,17 @@ architecture rtl of test is
     end procedure;
 begin
 
-    
+    process (bfm_com)
+    begin
+        if bfm_com="0001" then
+
+        elsif bfm_com="0010" then
+
+        elsif bfm_com="0100" then
+
+        elsif bfm_com="1000" then
+
+        end if;
+    end process;
 
 end architecture;
