@@ -7,7 +7,7 @@ entity test is
     port (
         sclk : out std_logic;
         mosi : out std_logic;
-        miso : in std_logic;
+        miso : in std_logic_vector(19 downto 0);
         cs_b : out std_logic;
         bfm_com : in std_logic_vector(3 downto 0);
         bfm_rep : out std_logic_vector(3 downto 0)

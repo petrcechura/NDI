@@ -4,9 +4,10 @@ use ieee.numeric_std.all;
 
 
 entity BFM_clk is
+
     port (
         clk_en   : in std_logic;
-        clk_out : out std_logic;
+        clk_out : out std_logic
     );
 end entity;
 

@@ -7,13 +7,54 @@ entity TestBench is
     generic (
         bit_size : integer := 16
     );
-
-    port (
-        clk   : in std_logic;
-        reset : in std_logic;
-        packet : in std_logic_vector((bit_size-1)*2 downto 0);
-        frame : in std_logic_vector(bit_size-1 downto 0);
-        result : out std_logic_vector(bit_size-1 downto 0);
-        error : out std_logic -- je-li 1, nastal error
-    );
 end entity;
+
+
+architecture rtl of TestBench is
+
+    constant clk_period : time := 10 ns;
+
+    procedure SendRightPacket (<params>) is
+    begin
+        
+    end procedure;
+
+    procedure SendPacketOfWrongSize (<params>) is
+    begin
+        
+    end procedure;
+
+    procedure SendDelayedPacket (constant delay : time) is
+
+    begin
+        
+    end procedure;
+        
+    
+
+begin
+
+    BFM_I: entity work.BFM(rtl)
+        port map (
+            
+        );
+    
+    TESTCASE_I: entity work.TestBench(rtl)
+        port map (
+            
+        );
+
+    BFM_clk_I entity work.BFM_clk(rtl)
+        port map (
+            
+        );
+
+    process
+    begin
+        
+    end process;
+
+
+
+
+end architecture;
