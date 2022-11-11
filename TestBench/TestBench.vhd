@@ -14,23 +14,9 @@ architecture rtl of TestBench is
 
     constant clk_period : time := 10 ns;
 
-    procedure SendRightPacket (<params>) is
-    begin
-        
-    end procedure;
-
-    procedure SendPacketOfWrongSize (<params>) is
-    begin
-        
-    end procedure;
-
-    procedure SendDelayedPacket (constant delay : time) is
-
-    begin
-        
-    end procedure;
-        
-    
+    signal clk_en : std_logic := '0';
+    signal rst : std_logic := '0';
+    signal clk : std_logic;
 
 begin
 
@@ -38,23 +24,29 @@ begin
         port map (
             
         );
-    
-    TESTCASE_I: entity work.TestBench(rtl)
-        port map (
-            
-        );
 
     BFM_clk_I entity work.BFM_clk(rtl)
         port map (
-            
+            clk_en => clk_en,
+            clk_out => clk;
         );
 
-    process
+    
+
+    TESTCASE_P: process
     begin
         
+        --test odeslani spravneho packetu
+
+        --test odeslani nespravneho packetu (chybny pocet bitu v prvnim framu)
+
+        --test odeslani nespravneho packetu (chybny pocet bitu ve druhem framu)
+
+        --test odeslani nespravneho packetu (chybny pocet bitu ve druhem framu) s naslednou opravou
+
+        --test odeslani packetu s prilis velkym zpozdenim
+
+        --test odeslani packetu s pretecenim
     end process;
-
-
-
 
 end architecture;
