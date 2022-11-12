@@ -19,10 +19,34 @@ package Ver_pkg is
         done : std_logic; --signal goes '1' after all results are obtained
     end record;
 
-    procedure SendPacket (signal frame1 : std_logic_vector(19 downto 0);
-                          signal frame2 : std_logic_vector(19 downto 0);
-                          constant fr1_size : integer;
-                          constant fr2_size : integer;
-                          constant delay : time);
+    procedure SendPacket (signal frame1 : in std_logic_vector(frame_size+3 downto 0);
+                          signal frame2 : in std_logic_vector(frame_size+3 downto 0);
+                          constant fr1_size : in integer;
+                          constant fr2_size : in integer;
+                          constant delay : in time;
+                          signal reset : in std_logic);
         
 end package;
+
+package body Ver_pkg is
+    
+
+    procedure SendPacket (signal frame1 : in std_logic_vector(frame_size+3 downto 0);
+                          signal frame2 : in std_logic_vector(frame_size+3 downto 0);
+                          constant fr1_size : in integer;
+                          constant fr2_size : in integer;
+                          constant delay : in time;
+                          signal reset : out std_logic;
+                          signal to_bfm : out t_bfm_com;
+                          signal from_bfm : in t_bfm_rep) is
+    begin
+        reset <= '1';
+        wait for 10 ns;
+        reset <= '0';
+        wait for 10 ns;
+
+
+
+    end procedure;
+        
+end package body;
