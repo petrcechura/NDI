@@ -20,7 +20,7 @@ architecture rtl of TestBench is
     signal rst : std_logic := '0';
     signal clk : std_logic := '0';
 
-    signal bfm_com : std_logic_vector(5 downto 0);
+    signal bfm_com : t_bfm_com;
     signal bfm_results : t_bfm_rep;
 
 
@@ -44,10 +44,13 @@ begin
     begin
         
         --test odeslani spravneho packetu
-        rst <= '1';
-        wait for 1 ns;
-        rst <= '0';
-        --SendPacket()
+        SendPacket("0000111100001111",
+                   "0000111100001111",
+                   16,
+                   16,
+                   500 us,
+                   bfm_com,
+                   bfm_rep);
         wait until rising_edge(bfm_rep);
 
         --test odeslani nespravneho packetu (chybny pocet bitu v prvnim framu)
