@@ -47,6 +47,10 @@ package body Ver_pkg is
     begin
         wait until rising_edge(from_bfm.done);
 
+        add_res <= from_bfm.add_res;
+        mul_res <= from_bfm.mul_res;
+
+        report --
     end procedure;
     begin
         reset <= '1';
