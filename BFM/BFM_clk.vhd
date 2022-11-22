@@ -15,7 +15,7 @@ architecture rtl of BFM_clk is
         constant clk_period : time := 10 ns;
 begin
 
-        process (clk_en)
+        process
         begin
             while clk_en='1' loop
                 clk_out <= '1';

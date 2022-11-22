@@ -25,9 +25,9 @@ architecture rtl of test is
     constant SCLK_period : time := 10 us;
 
     procedure SendAndGetFrame (signal p_sent_frame : in std_logic_vector(frame_size+3 downto 0);
-                               signal p_miso : in std_logic;
-                               signal p_got_frame : out std_logic_vector(frame_size+3 downto 0);
                                signal p_mosi : out std_logic;
+                               signal p_got_frame : out std_logic_vector(frame_size-1 downto 0);
+                               signal p_miso : in std_logic;
                                signal p_cs_b : out std_logic;
                                signal p_sclk : out std_logic) is 
     begin
@@ -47,12 +47,12 @@ architecture rtl of test is
 
 begin
 
-    process (bfm_com)
+    process
     begin
-        SendAndGetFrame(bfm_com.frame1, miso, bfm_rep.add_res, mosi, cs_b, sclk);
+        SendAndGetFrame(bfm_com.frame1, mosi, bfm_rep.add_res, miso, cs_b, sclk);
         cs_b <= '1';
         wait for bfm_com.delay;
-        SendAndGetFrame(bfm_com.frame2, miso, bfm_rep.mul_res, mosi, cs_b, sclk);
+        SendAndGetFrame(bfm_com.frame2, mosi, bfm_rep.mul_res, miso, cs_b, sclk);
         cs_b <= '1';
         bfm_rep.done <= '1';
         wait;

@@ -27,6 +27,9 @@ package Ver_pkg is
                           signal reset : in std_logic;
                           signal to_bfm : out t_bfm_com;
                           signal from_bfm : in t_bfm_rep);
+
+    procedure GetPacket (signal add_res : out std_logic_vector(frame_size downto 0);
+                         signal mul_res : out std_logic_vector(frame_size downto 0));
         
 end package;
 
@@ -41,17 +44,6 @@ package body Ver_pkg is
                           signal reset : out std_logic;
                           signal to_bfm : out t_bfm_com;
                           signal from_bfm : in t_bfm_rep) is
-
-    procedure GetPacket (signal add_res : out std_logic_vector(frame_size downto 0);
-                         signal mul_res : out std_logic_vector(frame_size downto 0)) is
-    begin
-        wait until rising_edge(from_bfm.done);
-
-        add_res <= from_bfm.add_res;
-        mul_res <= from_bfm.mul_res;
-
-        report --
-    end procedure;
     begin
         reset <= '1';
         wait for 10 ns;
@@ -64,6 +56,18 @@ package body Ver_pkg is
         to_bfm.fr2_size <= fr2_size;
         to_bfm.delay <= delay;
 
+    end procedure;
+
+    procedure GetPacket (signal add_res : out std_logic_vector(frame_size downto 0);
+                         signal mul_res : out std_logic_vector(frame_size downto 0);
+                         signal from_bfm : in t_bfm_rep) is
+    begin
+        wait until rising_edge(from_bfm.done);
+
+        add_res <= from_bfm.add_res;
+        mul_res <= from_bfm.mul_res;
+
+        report "add result: " & to_string(add_res) & ", mul result: " & to_string(mul_res);
     end procedure;
         
 end package body;
