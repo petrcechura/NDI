@@ -1,0 +1,114 @@
+
+
+
+--Test odeslání platného paketu (f = 10 kHz / 100 kHz / 1 MHz)
+-pokryté REQ:
+ REQ_AAU_F_010, REQ_AAU_F_011, REQ_ AAU_I_020, REQ_ AAU_I_024
+-popis: 
+	Cílem testu je ověřit základní funkčnost sběrnice odesláním správného paketu se správnou délkou rámců a zpožděním 200 us. Odpověď se očekává v dalším paketu.
+-postup:
+	-spuštění CLK
+	-reset DUT
+	-odeslání platného rámce
+	-počkat 200 us
+	-odeslání platného rámce
+	-obdržet hodnoty add_res
+	-počkat 200 us
+	-obdržet hodnoty mul_res
+	
+	-zkontrolovat výsledky add_res a mul_res
+	
+	*zopakovat pro frekvence 100 KHz a 1 MHz
+	
+--Test odeslání neplatného paketu (zpoždění) (f = 10 kHz)
+-pokryté REQ:
+ REQ_ AAU_I_023
+-popis:
+	Cílem testu je ověřit, zda sběrnice nebude reagovat na rámce, které byly odeslány se zpožděním 2 ms (>1 ms).
+-postup:
+	-spuštění CLK
+	-reset DUT
+	-odeslání platného rámce
+	-počkat 2 ms (!)
+	-odeslání platného rámce
+	-obdržet hodnoty add_res
+	-počkat 200 us
+	-obdržet hodnoty mul_res
+	
+--Test odeslání neplatného paketu (špatná délka) (f = 10 kHz)
+-pokryté REQ:
+ REQ_ AAU_I_022
+-popis:
+	Test ověřuje chování sběrnice, je-li první rámec odeslán s nesprávnou délkou. Sběrnice by měla takový rámec ignorovat.
+-postup:
+	-spuštění CLK
+	-reset DUT
+	-odeslání neplatného rámce (délka 19 bit)
+	-počkat 200 us
+	-odeslání platného rámce
+	-obdržet hodnoty add_res
+	-počkat 200 us
+	-obdržet hodnoty mul_res
+	
+--Test odeslání platného paketu (resp. neplatného 1. rámce s opravou) (f = 10 kHz)
+-pokryté REQ:
+ 
+-popis: 
+	Cílem je ověřit, zda je sběrnice schopna adekvátně reagovat na opravu chybně přijatého rámce a odeslat paket zpět jako při přenosu bez chyby.
+ 
+-postup:
+	-spuštění CLK
+	-reset DUT
+	-odeslání neplatného rámce (délka 19 bit)
+	-počkat 200 us
+	-odeslání platného rámce
+	-počkat 200 us
+	-obdržet hodnoty add_res
+	-odeslání platného rámce
+	-počkat 200 us
+	-obdržet hodnoty mul_res
+	
+	-zkontrolovat výsledky add_res a mul_res
+	
+--Test odeslání platného paketu s přetečením (f = 10 kHz)
+-pokryté REQ:
+REQ_AAU_F_013
+-popis: 
+	Cílem je ověřit schopnost sběrnice reagovat na rámce s hodnotami, které způsobí přetečení u aritmetických operací.
+-pokryté REQ:
+ 
+-postup:
+	-spuštění CLK
+	-reset DUT
+	-odeslání platného rámce
+	-počkat 200 us
+	-odeslání platného rámce
+	-obdržet hodnoty add_res
+	-počkat 200 us
+	-obdržet hodnoty mul_res
+	
+	-zkontrolovat výsledky add_res a mul_res
+	
+--Test odeslání platného paketu s potřebou zaokrouhlování výsledku (f = 10 kHz)
+-pokryté REQ:
+ REQ_AAU_F_012
+-popis: 
+	Cílem je ověřit schopnost sběrnice reagovat na rámce s hodnotami, které způsobí přetečení u aritmetických operací.
+-pokryté REQ:
+ 
+-postup:
+	-spuštění CLK
+	-reset DUT
+	-odeslání platného rámce
+	-počkat 200 us
+	-odeslání platného rámce
+	-obdržet hodnoty add_res
+	-počkat 200 us
+	-obdržet hodnoty mul_res
+	
+	-zkontrolovat výsledky add_res a mul_res		
+	
+	
+	
+	
+
