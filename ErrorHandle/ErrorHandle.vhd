@@ -40,7 +40,7 @@ begin
 
                     frame_start <= '0';
                     frame_stop <= '1';
-                    frame_error <= '0' when SCLK_ris_am_q = frame_size + 1
+                    frame_error <= '0' when SCLK_ris_am_q = frame_size and SCLK_fall_am_q = frame_size+1
                                        else '1';
                 else
                     write_enable <= write_enable;
@@ -50,7 +50,7 @@ begin
                     frame_error <= '0';
                 end if;
                 --pocitani nabeznych a sestupnych hran
-                if write_enable='1' then
+                if write_enable='1' and CS_b_ris = '0' then
                     if SCLK_ris='1' then
                         SCLK_ris_am_q <= SCLK_ris_am_q + 1;
                         if SCLK_ris_am_q>frame_size then -- je-li bitu nespravny pocet, vyhod chybu
@@ -59,7 +59,7 @@ begin
                         end if;
                     elsif SCLK_fall='1' then
                         SCLK_fall_am_q <= SCLK_fall_am_q + 1;
-                        if SCLK_fall_am_q>frame_size then -- je-li bitu nespravny pocet, vyhod chybu
+                        if SCLK_fall_am_q>frame_size+1 then -- je-li bitu nespravny pocet, vyhod chybu
                             frame_stop <= '0';
                             frame_error <= '1';
                         end if;

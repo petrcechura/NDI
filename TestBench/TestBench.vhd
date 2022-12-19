@@ -24,16 +24,24 @@ architecture rtl of TestBench is
     signal clk : std_logic := '0';
 
     --between BFM and TestBench
-    signal bfm_com : t_bfm_com;
-    signal bfm_results : t_bfm_rep;
+    signal bfm_com : t_bfm_com := (frame => (others => '0'),
+                                   fr_size => 16,
+                                   start => '0',
+                                   reset => '0');
+    signal bfm_results : t_bfm_rep := (result => (others => '0'),
+                                       start => '0',
+                                       done => '0');
     signal test_end : std_logic := '0';
 
     --between SPI_AAU and BFM
     signal s_mosi, s_miso, s_sclk, s_cs_b : std_logic;
 
     --in process
-    signal frame1 : signed(frame_size+3 downto 0) := (others => '0');
-    signal frame2 : signed(frame_size+3 downto 0) := (others => '0');
+    signal frame1 : signed(16-1 downto 0) := (others => '0');
+    signal frame2 : signed(16-1 downto 0) := (others => '0');
+
+    signal fr1_size, fr2_size : integer;
+    signal delay : time := 200 us;
 
 
 
@@ -56,7 +64,7 @@ begin
     DUT_I: entity work.SPI_AAU(rtl)
         port map (
             clk => clk,
-            reset => rst,
+            reset => bfm_com.reset,
             MOSI => s_mosi,
             MISO => s_miso,
             SCLK => s_sclk,
@@ -68,74 +76,22 @@ begin
     TESTCASE_P: process
     begin
         clk_en <= '1';
+        bfm_com.reset <= '1';
+        wait for 10 us;
+        bfm_com.reset <= '0';
 
-        frame1 <= "00001111000011110000";
-        frame2 <= "00001111000011110000";
+        frame1 <= "1000000000000001";
+        frame2 <= "0010000000000100";
+        fr1_size <= 16;
+        fr2_size <= 16;
 
-        report "Starting test no. 1";
-        --test odeslani spravneho packetu
-        SendPacket("00001111000011110000", --1st frame
-                   "00001111000011110000", --2nd frame
-                   16, --size of 1st frame
-                   16, --size of 2nd frame
-                   500 us, --delay
-                   rst,
-                   bfm_com); --(don't change)
-        GetPacket(bfm_results);
+        SendPacket(bfm_com, bfm_results,
+                   frame1, frame2,
+                   fr1_size, fr2_size,
+                   delay);
 
-        report "Starting test no. 2";
-        --test odeslani nespravneho packetu (chybny pocet bitu v prvnim framu)
-        SendPacket("00001111000011110000",
-                   "00001111000011110000",
-                   18,
-                   16,
-                   500 us,
-                   rst,
-                   bfm_com); --(don't change)
-        GetPacket(bfm_results);
-
-
-        report "Starting test no. 3";
-        --test odeslani nespravneho packetu (chybny pocet bitu ve druhem framu)
-        SendPacket("00001111000011110000",
-                   "00001111000011110000",
-                   16,
-                   18,
-                   500 us,
-                   rst,
-                   bfm_com); --(don't change)
-        GetPacket(bfm_results);
-
-
-        report "Starting test no. 4";
-        --test odeslani nespravneho packetu (chybny pocet bitu ve druhem framu) s naslednou opravou
-
-
-
-        report "Starting test no. 5";
-        --test odeslani packetu s prilis velkym zpozdenim
-        SendPacket("00001111000011110000",
-                   "00001111000011110000",
-                   16,
-                   16,
-                   5000 us,
-                   rst,
-                   bfm_com); --(don't change)
-        GetPacket(bfm_results);
-
-
-
-        report "Starting test no. 6";
-        --test odeslani packetu s pretecenim
-        SendPacket("00001111000011110000",
-                   "00001111000011110000",
-                   16,
-                   16,
-                   500 us,
-                   rst,
-                   bfm_com); --(don't change)
-        GetPacket(bfm_results);
-
+        
+        test_end <= '1';
         clk_en <= '0';
         wait;
     end process;

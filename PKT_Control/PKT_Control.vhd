@@ -15,7 +15,7 @@ entity PKT_Control is
         wr_data : out std_logic;
         data_in : out std_logic_vector(bit_size-1 downto 0);
         we_data_fr1, we_data_fr2 : out std_logic;
-        data_fr1, data_fr2 : out std_logic_vector(bit_size-1 downto 0);
+        data_fr : out std_logic_vector(bit_size-1 downto 0);
         add_res, mul_res : in std_logic_vector(bit_size-1 downto 0);
         data_erase : out std_logic
     );
@@ -33,7 +33,6 @@ architecture rtl of PKT_Control is
             timer_start : out std_logic; 
             timer_get : in std_logic;
             data_erase : out std_logic; --vymazani dat ze serialiseru pri erroru
-            add_res_en : out std_logic;
             mul_res_en : out std_logic
         );
     end component;
@@ -52,7 +51,7 @@ architecture rtl of PKT_Control is
     end component;
 
     signal timer_start, timer_stop : std_logic;
-    signal add_res_en, mul_res_en : std_logic;
+    signal mul_res_en : std_logic;
 begin
 
     TIMER_I: Timer
@@ -81,27 +80,12 @@ begin
                 timer_start  => timer_start,
                 timer_get => timer_stop,
                 data_erase => data_erase, --vymazani dat ze serialiseru pri erroru
-                add_res_en => add_res_en,
                 mul_res_en => mul_res_en
         );
 
-        data_fr1 <= data_out; --data z deserialiseru do arith. jednotky
-        data_fr2 <= data_out;
+        data_fr <= data_out; --data z deserialiseru do arith. jednotky
 
-        process (clk)
-        begin
-            if rising_edge(clk) then
-                if reset='1' then
-                    data_in <= add_res;
-                elsif add_res_en='1' then
-                    data_in <= add_res;
-                elsif mul_res_en='1' then
-                    data_in <= mul_res;
-                else
-                    data_in <= data_in;
-                end if;
-            end if;
-        end process;
+        data_in <= mul_res when mul_res_en='1' else add_res;
 
 
 

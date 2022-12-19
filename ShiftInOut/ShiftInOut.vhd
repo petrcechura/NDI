@@ -34,7 +34,7 @@ begin
                    write_enable_sig <= write_enable_sig;
                 end if;
 
-                if write_enable_sig='1' then  --je-li zapis povoleny, prepinej mezi enably podle SCLK  
+                if write_enable_sig='1' and CS_b_ris = '0' then  --je-li zapis povoleny, prepinej mezi enably podle SCLK  
                     if SCLK_ris='1' then
                         MISO_en <= '1'; --pri nabezne sclk povol serializer
                         MOSI_en <= '0';

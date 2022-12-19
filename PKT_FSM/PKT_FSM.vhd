@@ -11,7 +11,7 @@ entity PKT_FSM is
         timer_start : out std_logic; 
         timer_get : in std_logic;
         data_erase : out std_logic; --vymazani dat ze serialiseru (a AU) pri erroru
-        add_res_en, mul_res_en : out std_logic
+        mul_res_en : out std_logic
     );
 end entity;
 
@@ -33,12 +33,11 @@ begin
                     timer_start <= '0';
                     data_erase <= '0';
 
-                    add_res_en <= '0';
                     mul_res_en <= '0';
 
                     if frame_start='1' then --zacal-li prenos, prijimej data
                         fsm_state <= S_getting_fr1;
-                        add_res_en <= '1';
+                        wr_data <= '1';
                     else
                         fsm_state <= S_awaiting_fr1;
                     end if;
@@ -50,7 +49,6 @@ begin
                     timer_start <= '0';
                     data_erase <= '0';
 
-                    add_res_en <= '0';
                     mul_res_en <= '0';
 
                     if frame_error='1' then
@@ -59,6 +57,8 @@ begin
                     elsif frame_stop='1' then
                         we_data_fr1 <= '1'; --bezchybny prenos posli do AU
                         fsm_state <= S_awaiting_fr2;
+                        mul_res_en <= '1';
+                        wr_data <= '1';
                     else
                         fsm_state <= S_getting_fr1;
                     end if;
@@ -69,14 +69,13 @@ begin
                     timer_start <= '1'; --timer se nacita, dokud je toto v '1' (funguje jako enable)
                     data_erase <= '0';
 
-                    add_res_en <= '0';
-                    mul_res_en <= '0';
+                    mul_res_en <= '1';
 
                     if timer_get='1' then --pretece-li timer, vrat se do stavu 1
                         fsm_state <= S_awaiting_fr1;
                     elsif frame_start='1' then
                         fsm_state <= S_getting_fr2;
-                        mul_res_en <= '1';
+                        --wr_data <= '1';
                     end if;
                 when S_getting_fr2 =>
                     we_data_fr1 <= '0';
@@ -85,8 +84,7 @@ begin
                     timer_start <= '0';
                     data_erase <= '0';
 
-                    add_res_en <= '0';
-                    mul_res_en <= '0';
+                    mul_res_en <= '1';
                     
                     if frame_error='1' then
                         --data_erase <= '1';

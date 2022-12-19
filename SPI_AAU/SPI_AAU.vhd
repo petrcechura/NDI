@@ -31,8 +31,7 @@ architecture rtl of SPI_AAU is
         type t_PKT_C_out is record
             we_data_fr1 : std_logic;
             we_data_fr2 : std_logic;
-            data_fr1 : std_logic_vector(bit_size-1 downto 0);
-            data_fr2 : std_logic_vector(bit_size-1 downto 0);
+            data_fr : std_logic_vector(bit_size-1 downto 0);
             add_res : std_logic_vector(bit_size-1 downto 0);
             mul_res : std_logic_vector(bit_size-1 downto 0);
             data_erase : std_logic;
@@ -72,8 +71,7 @@ begin
             data_in => SPI_IF_OUT.data_in,
             we_data_fr1 => PKT_C_OUT.we_data_fr1,
             we_data_fr2 => PKT_C_OUT.we_data_fr2,
-            data_fr1 => PKT_C_OUT.data_fr1,
-            data_fr2 => PKT_C_OUT.data_fr2,
+            data_fr => PKT_C_OUT.data_fr,
             add_res => PKT_C_OUT.add_res,
             mul_res => PKT_C_OUT.mul_res,
             data_erase => PKT_C_OUT.data_erase
@@ -83,8 +81,7 @@ begin
         port map (
             clk => clk,
             reset => reset,
-            data_fr1 => PKT_C_OUT.data_fr1,
-            data_fr2 => PKT_C_OUT.data_fr2,
+            data_fr => PKT_C_OUT.data_fr,
             we_data_fr1 => PKT_C_OUT.we_data_fr1,
             we_data_fr2 => PKT_C_OUT.we_data_fr2,
             add_res => PKT_C_OUT.add_res,
