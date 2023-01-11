@@ -15,7 +15,6 @@ end entity;
 architecture rtl of ErrorHandle is
     signal SCLK_ris_am_q, SCLK_fall_am_q : unsigned(4 downto 0) := (others => '0');
     signal write_enable : std_logic := '0';
-    signal overflow : std_logic := '0';
     constant frame_size : integer := 16;
 begin
     --sekvencni cast
@@ -40,8 +39,13 @@ begin
 
                     frame_start <= '0';
                     frame_stop <= '1';
-                    frame_error <= '0' when SCLK_ris_am_q = frame_size and SCLK_fall_am_q = frame_size+1
-                                       else '1';
+						  if SCLK_ris_am_q = frame_size and SCLK_fall_am_q = frame_size+1 then
+								frame_error <= '0';
+						  else
+								frame_error <= '1';
+						  end if;
+                    --frame_error <= '0' when SCLK_ris_am_q = frame_size and SCLK_fall_am_q = frame_size+1 
+							--						else '1';
                 else
                     write_enable <= write_enable;
 

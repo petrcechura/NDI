@@ -22,8 +22,6 @@ end entity;
 architecture rtl of BFM is
 
     signal frame : signed(15 downto 0) := (others => '0') ;
-    constant clk_period : time := 20 ns;
-    constant SCLK_period : time := 10 us;
 
 begin
 
@@ -38,18 +36,25 @@ begin
             cs_b <= '0';
             sclk <= '1';
             bfm_rep.done <= '0';
-            wait for SCLK_period/2;
+            wait for bfm_com.sclk_period/2;
             bfm_rep.start <= '0';
+            --bfm_rep.result <= (others => '0'); 
             for i in bfm_com.fr_size-1 downto 0 loop
                 sclk <= '0';
-                bfm_rep.result(i) <= miso;
-                wait for SCLK_period/2;
+                if i <= 15 then 
+                    bfm_rep.result(i) <= miso;
+                end if;
+                wait for bfm_com.sclk_period/2;
                 sclk <= '1';
-                mosi <= bfm_com.frame(i);
-                wait for SCLK_period/2;
+                if i<= 15 then 
+                    mosi <= bfm_com.frame(i);
+                else
+                    mosi <= '0';
+                end if;
+                wait for bfm_com.sclk_period/2;
             end loop;
             sclk <= '0';
-            wait for SCLK_period/2;
+            wait for bfm_com.sclk_period/2;
             mosi <= '0';
             cs_b <= '1';
             bfm_rep.done <= '1';

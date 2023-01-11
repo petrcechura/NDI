@@ -20,16 +20,19 @@ architecture rtl of Timer is
     signal time_value_s : unsigned(15 downto 0) := (others => '0');
 begin
 
-    process (clk)
+    process (clk, reset)
     begin
-        if rising_edge(clk) then
+        if reset='1' then
+            timer_stop <= '0';
+            time_value_s <= (others => '0');
+        elsif rising_edge(clk) then
             if timer_start='1' then
                 time_value_s <= time_value_s + 1;
             else
                 time_value_s <= (others => '0');
             end if;
 
-            if time_value_s>max_cycles_of_clock then
+            if time_value_s>max_cycles_of_clock-1 then
                 timer_stop <= '1';
             else
                 timer_stop <= '0';

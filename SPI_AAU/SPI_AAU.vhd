@@ -34,7 +34,6 @@ architecture rtl of SPI_AAU is
             data_fr : std_logic_vector(bit_size-1 downto 0);
             add_res : std_logic_vector(bit_size-1 downto 0);
             mul_res : std_logic_vector(bit_size-1 downto 0);
-            data_erase : std_logic;
         end record;
 
         signal SPI_IF_OUT : t_SPI_IF_out;
@@ -73,8 +72,7 @@ begin
             we_data_fr2 => PKT_C_OUT.we_data_fr2,
             data_fr => PKT_C_OUT.data_fr,
             add_res => PKT_C_OUT.add_res,
-            mul_res => PKT_C_OUT.mul_res,
-            data_erase => PKT_C_OUT.data_erase
+            mul_res => PKT_C_OUT.mul_res
         );
 
     ARITHMETICAL_UNIT_I: entity work.Arithmetical_unit(rtl)

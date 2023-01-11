@@ -16,8 +16,8 @@ entity PKT_Control is
         data_in : out std_logic_vector(bit_size-1 downto 0);
         we_data_fr1, we_data_fr2 : out std_logic;
         data_fr : out std_logic_vector(bit_size-1 downto 0);
-        add_res, mul_res : in std_logic_vector(bit_size-1 downto 0);
-        data_erase : out std_logic
+        add_res, mul_res : in std_logic_vector(bit_size-1 downto 0)
+        --data_erase : out std_logic
     );
 end entity;
 
@@ -32,7 +32,6 @@ architecture rtl of PKT_Control is
             wr_data : out std_logic; --povoleni zapisu do serialiseru
             timer_start : out std_logic; 
             timer_get : in std_logic;
-            data_erase : out std_logic; --vymazani dat ze serialiseru pri erroru
             mul_res_en : out std_logic
         );
     end component;
@@ -79,7 +78,6 @@ begin
                 wr_data  =>  wr_data, --povoleni zapisu do serialiseru
                 timer_start  => timer_start,
                 timer_get => timer_stop,
-                data_erase => data_erase, --vymazani dat ze serialiseru pri erroru
                 mul_res_en => mul_res_en
         );
 

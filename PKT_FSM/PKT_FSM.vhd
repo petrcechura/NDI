@@ -10,7 +10,7 @@ entity PKT_FSM is
         wr_data : out std_logic; --povoleni zapisu do serialiseru
         timer_start : out std_logic; 
         timer_get : in std_logic;
-        data_erase : out std_logic; --vymazani dat ze serialiseru (a AU) pri erroru
+        --data_erase : out std_logic; --vymazani dat ze serialiseru (a AU) pri erroru
         mul_res_en : out std_logic
     );
 end entity;
@@ -21,9 +21,11 @@ architecture rtl of PKT_FSM is
     signal state_number : std_logic_vector(3 downto 0) := (others => '0'); 
 begin
 
-    process (clk)
+    process (clk, reset)
     begin
-        if rising_edge(clk) then
+        if reset = '1' then
+            fsm_state <= S_awaiting_fr1;  
+        elsif rising_edge(clk) then
             case fsm_state is --pri nabezne hrane rozhodni o dalsim stavu
 
                 when S_awaiting_fr1 =>
@@ -31,7 +33,6 @@ begin
                     we_data_fr2 <= '0';
                     wr_data <= '0';
                     timer_start <= '0';
-                    data_erase <= '0';
 
                     mul_res_en <= '0';
 
@@ -47,7 +48,6 @@ begin
                     we_data_fr2 <= '0';
                     wr_data <= '0';
                     timer_start <= '0';
-                    data_erase <= '0';
 
                     mul_res_en <= '0';
 
@@ -67,7 +67,6 @@ begin
                     we_data_fr2 <= '0';
                     wr_data <= '0';
                     timer_start <= '1'; --timer se nacita, dokud je toto v '1' (funguje jako enable)
-                    data_erase <= '0';
 
                     mul_res_en <= '1';
 
@@ -82,17 +81,16 @@ begin
                     we_data_fr2 <= '0';
                     wr_data <= '0';
                     timer_start <= '0';
-                    data_erase <= '0';
 
-                    mul_res_en <= '1';
+                    mul_res_en <= '0';
                     
                     if frame_error='1' then
                         --data_erase <= '1';
-                        fsm_state <= S_awaiting_fr1;
+                        fsm_state <= S_awaiting_fr2;
                     elsif frame_stop='1' then
                         we_data_fr2 <= '1'; --bezchybny prenos posli do AU
                         fsm_state <= S_awaiting_fr1;
-                        wr_data <= '1';
+                        --wr_data <= '1';
                     else
                         fsm_state <= S_getting_fr2;
                     end if;
