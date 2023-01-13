@@ -10,19 +10,17 @@ package Ver_pkg is
         start : std_logic;
         reset : std_logic;
         sclk_period : time;
+        bit_order : std_logic;
     end record;
     
     type t_bfm_rep is record
         result : std_logic_vector(16-1 downto 0);
-        start : std_logic;
         done : std_logic; --signal goes '1' after all results are obtained
     end record;
 
     procedure SendRightPacket (  signal p_bfm_com : out t_bfm_com;
                             signal p_bfm_rep : in t_bfm_rep;
-                            variable frame1, frame2 : in signed(16-1 downto 0);
-                            variable fr1_size, fr2_size : in integer;
-                            variable delay : in time);
+                            variable frame1, frame2 : in signed(16-1 downto 0));
 
     procedure SendWrongPacket ( signal p_bfm_com : out t_bfm_com;
                                 signal p_bfm_rep : in t_bfm_rep;
@@ -42,9 +40,7 @@ package body Ver_pkg is
 
     procedure SendRightPacket (signal p_bfm_com : out t_bfm_com;
                           signal p_bfm_rep : in t_bfm_rep;
-                          variable frame1, frame2 : in signed(16-1 downto 0);
-                          variable fr1_size, fr2_size : in integer;
-                          variable delay : in time) is
+                          variable frame1, frame2 : in signed(16-1 downto 0)) is
     
         variable emp_frame : signed(16-1 downto 0) := (others => '0') ;
         variable emp_frame_size : integer := 16;
@@ -58,11 +54,11 @@ package body Ver_pkg is
         wait for 10 ns;
         
         report " Sending 1st frame: " & to_string(frame1);
-        SendFrame(frame1, fr1_size, p_bfm_com, p_bfm_rep);  --SEND 1ST FRAME
-        wait for delay;
-        report "Delay for " & to_string(delay);                                     --DELAY
+        SendFrame(frame1, emp_frame_size, p_bfm_com, p_bfm_rep);  --SEND 1ST FRAME
+        wait for 200 us;
+        report "Delay for 200 us";                                     --DELAY
         report "Sending 2nd frame: " & to_string(frame2);
-        SendFrame(frame2, fr2_size, p_bfm_com, p_bfm_rep);  --SEND 2ND FRAME
+        SendFrame(frame2, emp_frame_size, p_bfm_com, p_bfm_rep);  --SEND 2ND FRAME
 
         wait for 100 us;
 

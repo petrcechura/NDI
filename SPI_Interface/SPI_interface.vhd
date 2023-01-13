@@ -23,6 +23,8 @@ architecture rtl of SPI_Interface is
     signal CS_b_ris_edge_sig, CS_b_fall_edge_sig, SCLK_ris_edge_sig, SCLK_fall_edge_sig : std_logic := '0';
     signal serialiser_enable, deserialiser_enable : std_logic := '0';
 
+    signal dff_cs_b, dff_sclk, dff_miso, dff_mosi : std_logic := '0';
+
     component Deserialiser is
         generic (
             size : integer := bit_size
@@ -79,13 +81,22 @@ architecture rtl of SPI_Interface is
         );
     end component;
 
+    component DFF is
+        port (
+        clk   : in std_logic;
+        reset : in std_logic;
+        data_in : in std_logic;
+        data_out : out std_logic
+    );
+    end component;
+
     
 begin
 
     CS_B_EDGE_DET_I: Ris_fall_detector
         port map (
             clk => clk,
-            data_in => CS_b,
+            data_in => dff_cs_b,
             ris_out => CS_b_ris_edge_sig,
             fall_out => CS_b_fall_edge_sig,
             rst => rst
@@ -94,7 +105,7 @@ begin
     SCLK_EDGE_DET_I: Ris_fall_detector
         port map (
             clk => clk,
-            data_in => SCLK,
+            data_in => dff_sclk,
             ris_out => SCLK_ris_edge_sig,
             fall_out => SCLK_fall_edge_sig,
             rst => rst
@@ -114,7 +125,7 @@ begin
 
     DESERIALISER_I: Deserialiser
         port map (
-            data_in => MOSI,
+            data_in => dff_mosi,
             clk => clk,
             enable => deserialiser_enable,
             data_out => data_out,
@@ -127,7 +138,7 @@ begin
             load => wr_data,
             enable => serialiser_enable,
             clk => clk,
-            data_out => MISO,
+            data_out => dff_miso,
             rst => rst
         );
 
@@ -142,6 +153,38 @@ begin
             frame_start => frame_start,
             frame_stop => frame_stop,
             frame_error => frame_error
+        );
+
+    DFF_CS_B_I: DFF
+        port map (
+            reset => rst,
+            clk => clk,
+            data_in => CS_b,
+            data_out => dff_cs_b
+        );
+
+    DFF_SCLK_I: DFF
+        port map (
+            reset => rst,
+            clk => clk,
+            data_in => SCLK,
+            data_out => dff_sclk
+        );
+
+    DFF_MISO_I: DFF
+        port map (
+            reset => rst,
+            clk => clk,
+            data_in => dff_miso,
+            data_out => MISO
+        );
+
+    DFF_MOSI_I: DFF
+        port map (
+            reset => rst,
+            clk => clk,
+            data_in => MOSI,
+            data_out => dff_mosi
         );
 
 end architecture;

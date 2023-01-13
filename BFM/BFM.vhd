@@ -21,8 +21,6 @@ end entity;
 
 architecture rtl of BFM is
 
-    signal frame : signed(15 downto 0) := (others => '0') ;
-
 begin
 
     process
@@ -32,22 +30,29 @@ begin
         cs_b <= '1';
         while(test_end = '0') loop
             wait until rising_edge(bfm_com.start);
-            bfm_rep.start <= '1';
             cs_b <= '0';
             sclk <= '1';
             bfm_rep.done <= '0';
             wait for bfm_com.sclk_period/2;
-            bfm_rep.start <= '0';
-            --bfm_rep.result <= (others => '0'); 
             for i in bfm_com.fr_size-1 downto 0 loop
                 sclk <= '0';
                 if i <= 15 then 
                     bfm_rep.result(i) <= miso;
+
+                    if bfm_com.bit_order = '1' then --for test no. 6
+                        report "recieved bit: " & to_string(bfm_rep.result(i));
+                    end if;
+
                 end if;
                 wait for bfm_com.sclk_period/2;
                 sclk <= '1';
                 if i<= 15 then 
                     mosi <= bfm_com.frame(i);
+
+                    if bfm_com.bit_order = '1' then --for test no. 6
+                        report "sent bit: " & to_string(bfm_com.frame(i));
+                    end if;
+
                 else
                     mosi <= '0';
                 end if;
