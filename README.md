@@ -1,1 +1,1 @@
-# NDI
+# SPI Arithmetical unit
